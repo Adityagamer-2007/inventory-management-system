@@ -1,0 +1,18 @@
+<% if (pageInfo.totalPages > 1) { %>
+<nav aria-label="Pages" class="mt-3">
+  <ul class="pagination pagination-sm mb-0">
+    <li class="page-item <%= pageInfo.page <= 1 ? 'disabled' : '' %>"><a class="page-link" href="<%= pageUrl(pageInfo.page - 1) %>">Previous</a></li>
+    <% for (var i = 1; i <= pageInfo.totalPages; i++) { %>
+      <% if (i === 1 || i === pageInfo.totalPages || Math.abs(i - pageInfo.page) <= 2) { %>
+        <li class="page-item <%= i === pageInfo.page ? 'active' : '' %>"><a class="page-link" href="<%= pageUrl(i) %>"><%= i %></a></li>
+      <% } else if (Math.abs(i - pageInfo.page) === 3) { %>
+        <li class="page-item disabled"><span class="page-link">...</span></li>
+      <% } %>
+    <% } %>
+    <li class="page-item <%= pageInfo.page >= pageInfo.totalPages ? 'disabled' : '' %>"><a class="page-link" href="<%= pageUrl(pageInfo.page + 1) %>">Next</a></li>
+  </ul>
+  <div class="small text-muted mt-1"><%= pageInfo.total %> records</div>
+</nav>
+<% } else if (pageInfo.total > 0) { %>
+  <div class="small text-muted mt-2"><%= pageInfo.total %> record<%= pageInfo.total === 1 ? '' : 's' %></div>
+<% } %>

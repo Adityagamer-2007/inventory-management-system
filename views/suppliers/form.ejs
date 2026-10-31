@@ -1,0 +1,19 @@
+<div class="page-head"><h1><%= isEdit ? 'Edit supplier' : 'Add supplier' %></h1></div>
+<%- include('../partials/errors') %>
+<form action="<%= isEdit ? '/suppliers/' + supplier._id + '/edit' : '/suppliers' %>" method="post" class="panel form-panel narrow" novalidate>
+  <%- include('../partials/csrf') %>
+  <div class="mb-3"><label for="name" class="form-label">Supplier name</label>
+    <input class="form-control" id="name" name="name" maxlength="80" value="<%= supplier.name || '' %>" required autofocus></div>
+  <div class="row g-3 mb-3">
+    <div class="col-md-6"><label for="phone" class="form-label">Contact number</label>
+      <input class="form-control" id="phone" name="phone" maxlength="20" value="<%= supplier.phone || '' %>" required></div>
+    <div class="col-md-6"><label for="email" class="form-label">Email <span class="text-muted">(optional)</span></label>
+      <input type="email" class="form-control" id="email" name="email" maxlength="120" value="<%= supplier.email || '' %>"></div>
+  </div>
+  <div class="mb-3"><label for="address" class="form-label">Address <span class="text-muted">(optional)</span></label>
+    <textarea class="form-control" id="address" name="address" rows="2" maxlength="250"><%= supplier.address || '' %></textarea></div>
+  <div class="form-actions">
+    <button class="btn btn-primary" type="submit"><%= isEdit ? 'Save changes' : 'Add supplier' %></button>
+    <a href="/suppliers" class="btn btn-outline-secondary">Cancel</a>
+  </div>
+</form>

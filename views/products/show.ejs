@@ -1,0 +1,60 @@
+<div class="page-head">
+  <h1><%= product.name %></h1>
+  <div class="d-flex gap-2">
+    <a href="/stock/in?product=<%= product._id %>" class="btn btn-success">Stock In</a>
+    <a href="/stock/out?product=<%= product._id %>" class="btn btn-outline-secondary">Stock Out</a>
+    <a href="/products/<%= product._id %>/edit" class="btn btn-outline-primary">Edit</a>
+    <% if (currentUser.role === 'admin') { %>
+      <form action="/products/<%= product._id %>/delete" method="post" data-confirm="Delete product '<%= product.name %>'? This cannot be undone.">
+        <%- include('../partials/csrf') %>
+        <button class="btn btn-outline-danger" type="submit">Delete</button>
+      </form>
+    <% } %>
+  </div>
+</div>
+
+<div class="row g-3">
+  <div class="col-md-4 col-lg-3">
+    <div class="panel text-center">
+      <img class="detail-image" src="<%= product.image ? '/uploads/' + product.image : '/images/placeholder.svg' %>" alt="<%= product.name %>">
+    </div>
+  </div>
+  <div class="col-md-8 col-lg-9">
+    <section class="panel">
+      <dl class="detail-list">
+        <div><dt>SKU</dt><dd><%= product.sku %></dd></div>
+        <div><dt>Status</dt><dd><%- include('../partials/status-badge', { quantity: product.quantity, minStock: product.minStock }) %></dd></div>
+        <div><dt>Category</dt><dd><%= product.category ? product.category.name : '-' %></dd></div>
+        <div><dt>Supplier</dt><dd><%= product.supplier ? product.supplier.name : '-' %><% if (product.supplier && product.supplier.phone) { %><span class="text-muted small"> (<%= product.supplier.phone %>)</span><% } %></dd></div>
+        <div><dt>Current quantity</dt><dd class="fw-semibold"><%= product.quantity %></dd></div>
+        <div><dt>Minimum stock</dt><dd><%= product.minStock %></dd></div>
+        <div><dt>Purchase price</dt><dd><%= fmt.money(product.purchasePrice) %></dd></div>
+        <div><dt>Selling price</dt><dd><%= fmt.money(product.sellingPrice) %></dd></div>
+        <div><dt>Stock value (at cost)</dt><dd><%= fmt.money(product.quantity * product.purchasePrice) %></dd></div>
+        <div><dt>Added</dt><dd><%= fmt.dateTime(product.createdAt) %></dd></div>
+        <div><dt>Last updated</dt><dd><%= fmt.dateTime(product.updatedAt) %></dd></div>
+      </dl>
+      <% if (product.description) { %><h2 class="panel-title mt-3">Description</h2><p class="mb-0"><%= product.description %></p><% } %>
+    </section>
+  </div>
+</div>
+
+<section class="panel mt-3">
+  <h2 class="panel-title">Recent stock movements</h2>
+  <% if (history.length === 0) { %>
+    <p class="empty">No movements recorded for this product yet.</p>
+  <% } else { %>
+    <div class="table-responsive"><table class="table table-sm align-middle mb-0">
+      <thead><tr><th>When</th><th>Type</th><th class="text-end">Qty</th><th class="text-end">Before</th><th class="text-end">After</th><th>By</th><th>Note</th></tr></thead>
+      <tbody>
+      <% history.forEach(function (t) { %>
+        <tr>
+          <td class="small text-nowrap"><%= fmt.dateTime(t.createdAt) %></td>
+          <td><span class="badge <%= t.type === 'in' ? 'text-bg-success' : 'text-bg-secondary' %>"><%= t.type === 'in' ? 'Stock In' : 'Stock Out' %></span></td>
+          <td class="text-end"><%= t.quantity %></td><td class="text-end"><%= t.previousStock %></td><td class="text-end"><%= t.newStock %></td>
+          <td><%= t.username %></td><td><%= t.note %></td>
+        </tr>
+      <% }) %>
+      </tbody></table></div>
+  <% } %>
+</section>

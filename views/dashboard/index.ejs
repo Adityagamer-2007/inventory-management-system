@@ -1,0 +1,85 @@
+<div class="stat-strip">
+  <div class="stat"><div class="stat-value"><%= data.totals.products %></div><div class="stat-label">Products</div></div>
+  <div class="stat"><div class="stat-value"><%= data.totals.categories %></div><div class="stat-label">Categories</div></div>
+  <div class="stat"><div class="stat-value"><%= data.totals.suppliers %></div><div class="stat-label">Suppliers</div></div>
+  <div class="stat"><div class="stat-value"><%= data.totals.stockQuantity.toLocaleString('en-IN') %></div><div class="stat-label">Units in stock</div></div>
+  <a class="stat stat-alert <%= data.totals.lowStock > 0 ? 'has-alert' : '' %>" href="/low-stock">
+    <div class="stat-value"><%= data.totals.lowStock %></div><div class="stat-label">Low-stock products</div>
+  </a>
+</div>
+
+<div class="row g-3 mt-1">
+  <div class="col-lg-5">
+    <section class="panel h-100">
+      <h2 class="panel-title">Stock by category</h2>
+      <% if (data.charts.stockByCategory.values.length) { %>
+        <div class="chart-box"><canvas id="categoryChart" aria-label="Units in stock by category" role="img"></canvas></div>
+      <% } else { %><p class="empty">No products yet. <a href="/products/new">Add your first product</a>.</p><% } %>
+    </section>
+  </div>
+  <div class="col-lg-7">
+    <section class="panel h-100">
+      <h2 class="panel-title">Stock movement, last 14 days</h2>
+      <div class="chart-box"><canvas id="movementChart" aria-label="Units stocked in and out per day" role="img"></canvas></div>
+    </section>
+  </div>
+</div>
+<script type="application/json" id="chart-data"><%- chartJson %></script>
+
+<div class="row g-3 mt-1">
+  <div class="col-lg-6">
+    <section class="panel h-100">
+      <div class="panel-head"><h2 class="panel-title">Low-stock products</h2><a href="/low-stock" class="small">View all</a></div>
+      <% if (data.lowStockItems.length === 0) { %>
+        <p class="empty">Every product is above its minimum level.</p>
+      <% } else { %>
+        <div class="table-responsive"><table class="table table-sm align-middle mb-0">
+          <thead><tr><th>Product</th><th>Category</th><th class="text-end">Stock</th><th class="text-end">Minimum</th></tr></thead>
+          <tbody>
+          <% data.lowStockItems.forEach(function (p) { %>
+            <tr class="<%= p.quantity <= 0 ? 'row-out' : 'row-low' %>">
+              <td><a href="/products/<%= p._id %>"><%= p.name %></a><div class="small text-muted"><%= p.sku %></div></td>
+              <td><%= p.category ? p.category.name : '-' %></td>
+              <td class="text-end fw-semibold"><%= p.quantity %></td>
+              <td class="text-end"><%= p.minStock %></td>
+            </tr>
+          <% }) %>
+          </tbody></table></div>
+      <% } %>
+    </section>
+  </div>
+  <div class="col-lg-6">
+    <section class="panel h-100">
+      <div class="panel-head"><h2 class="panel-title">Recent transactions</h2><a href="/stock/transactions" class="small">View all</a></div>
+      <% if (data.recentTransactions.length === 0) { %>
+        <p class="empty">No stock movements yet. Record one with <a href="/stock/in">Stock In</a>.</p>
+      <% } else { %>
+        <div class="table-responsive"><table class="table table-sm align-middle mb-0">
+          <thead><tr><th>When</th><th>Product</th><th>Type</th><th class="text-end">Qty</th></tr></thead>
+          <tbody>
+          <% data.recentTransactions.forEach(function (t) { %>
+            <tr>
+              <td class="small text-nowrap"><%= fmt.dateTime(t.createdAt) %></td>
+              <td><%= t.productName %></td>
+              <td><span class="badge <%= t.type === 'in' ? 'text-bg-success' : 'text-bg-secondary' %>"><%= t.type === 'in' ? 'In' : 'Out' %></span></td>
+              <td class="text-end"><%= t.quantity %></td>
+            </tr>
+          <% }) %>
+          </tbody></table></div>
+      <% } %>
+    </section>
+  </div>
+</div>
+
+<section class="panel mt-3">
+  <h2 class="panel-title">Recent activity</h2>
+  <% if (data.recentActivity.length === 0) { %>
+    <p class="empty">No activity recorded yet.</p>
+  <% } else { %>
+    <ul class="activity-list">
+      <% data.recentActivity.forEach(function (a) { %>
+        <li><span class="activity-time"><%= fmt.dateTime(a.createdAt) %></span> <strong><%= a.username %></strong>: <%= a.message %></li>
+      <% }) %>
+    </ul>
+  <% } %>
+</section>

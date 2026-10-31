@@ -1,0 +1,30 @@
+<div class="page-head"><h1>Account settings</h1></div>
+<div class="row g-3">
+  <div class="col-lg-6">
+    <section class="panel">
+      <h2 class="panel-title">Profile</h2>
+      <%- include('../partials/errors', { errors: profileErrors }) %>
+      <form action="/account/profile" method="post" novalidate>
+        <%- include('../partials/csrf') %>
+        <div class="mb-3"><label class="form-label">Username</label><div class="form-control-plaintext"><%= form.username %> <span class="badge <%= form.role === 'admin' ? 'text-bg-dark' : 'text-bg-secondary' %>"><%= form.role === 'admin' ? 'Admin' : 'Staff' %></span></div></div>
+        <div class="mb-3"><label for="name" class="form-label">Full name</label><input class="form-control" id="name" name="name" value="<%= form.name %>" required></div>
+        <div class="mb-3"><label for="email" class="form-label">Email</label><input type="email" class="form-control" id="email" name="email" value="<%= form.email %>" required></div>
+        <button class="btn btn-primary" type="submit">Save profile</button>
+      </form>
+    </section>
+  </div>
+  <div class="col-lg-6">
+    <section class="panel">
+      <h2 class="panel-title">Change password</h2>
+      <%- include('../partials/errors', { errors: passwordErrors }) %>
+      <form action="/account/password" method="post" novalidate>
+        <%- include('../partials/csrf') %>
+        <div class="mb-3"><label for="currentPassword" class="form-label">Current password</label><input type="password" class="form-control" id="currentPassword" name="currentPassword" autocomplete="current-password" required></div>
+        <div class="mb-3"><label for="newPassword" class="form-label">New password</label><input type="password" class="form-control" id="newPassword" name="newPassword" autocomplete="new-password" required>
+          <div class="form-text">At least 8 characters, with a letter and a number.</div></div>
+        <div class="mb-3"><label for="confirmPassword" class="form-label">Repeat new password</label><input type="password" class="form-control" id="confirmPassword" name="confirmPassword" autocomplete="new-password" required></div>
+        <button class="btn btn-primary" type="submit">Change password</button>
+      </form>
+    </section>
+  </div>
+</div>

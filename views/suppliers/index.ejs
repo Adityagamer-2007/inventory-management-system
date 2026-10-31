@@ -1,0 +1,33 @@
+<div class="page-head">
+  <h1>Suppliers</h1>
+  <a href="/suppliers/new" class="btn btn-primary">Add supplier</a>
+</div>
+<form method="get" action="/suppliers" class="filter-bar">
+  <input type="search" name="q" class="form-control" placeholder="Search name, phone or email" value="<%= q %>" aria-label="Search suppliers">
+  <button class="btn btn-outline-primary" type="submit">Search</button>
+  <% if (q) { %><a href="/suppliers" class="btn btn-link">Clear</a><% } %>
+</form>
+<section class="panel p-0"><div class="table-responsive">
+  <table class="table table-hover align-middle mb-0">
+    <thead><tr><th>Name</th><th>Contact number</th><th>Email</th><th>Address</th><th class="text-end">Products</th><th class="text-end">Actions</th></tr></thead>
+    <tbody>
+    <% if (suppliers.length === 0) { %><tr><td colspan="6" class="empty">No suppliers found.</td></tr><% } %>
+    <% suppliers.forEach(function (s) { var n = countMap[s._id] || 0; %>
+      <tr>
+        <td class="fw-semibold"><a href="/products?supplier=<%= s._id %>"><%= s.name %></a></td>
+        <td><%= s.phone %></td><td><%= s.email %></td><td><%= s.address %></td>
+        <td class="text-end"><%= n %></td>
+        <td class="text-end text-nowrap">
+          <% if (currentUser.role === 'admin') { %>
+            <a href="/suppliers/<%= s._id %>/edit" class="btn btn-sm btn-outline-primary">Edit</a>
+            <form action="/suppliers/<%= s._id %>/delete" method="post" class="d-inline" data-confirm="Delete supplier '<%= s.name %>'?">
+              <%- include('../partials/csrf') %>
+              <button class="btn btn-sm btn-outline-danger" type="submit" <%= n > 0 ? 'disabled title="Still used by products"' : '' %>>Delete</button>
+            </form>
+          <% } else { %><span class="text-muted small">Admin only</span><% } %>
+        </td>
+      </tr>
+    <% }) %>
+    </tbody>
+  </table>
+</div></section>

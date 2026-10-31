@@ -1,0 +1,39 @@
+{
+  "name": "inventory-management-system",
+  "version": "1.0.0",
+  "description": "Student-level full-stack Inventory Management System (Node.js, Express, EJS, MongoDB)",
+  "main": "app.js",
+  "scripts": {
+    "prestart": "node scripts/ensureAdmin.js",
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "seed": "node scripts/seed.js",
+    "seed:reset": "node scripts/seed.js --reset",
+    "create-admin": "node scripts/createAdmin.js",
+    "test": "node --test",
+    "list-users": "node scripts/listUsers.js",
+    "reset-password": "node scripts/resetPassword.js",
+    "predev": "node scripts/ensureAdmin.js",
+    "ensure-admin": "node scripts/ensureAdmin.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "connect-mongo": "^5.1.0",
+    "dotenv": "^16.4.7",
+    "ejs": "^3.1.10",
+    "express": "^4.21.2",
+    "express-ejs-layouts": "^2.5.1",
+    "express-rate-limit": "^7.5.0",
+    "express-session": "^1.18.1",
+    "helmet": "^8.0.0",
+    "mongoose": "^8.9.5",
+    "multer": "^2.0.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
+}

@@ -1,0 +1,35 @@
+<div class="page-head">
+  <h1>User management</h1>
+  <a href="/users/new" class="btn btn-primary">Add staff account</a>
+</div>
+<section class="panel p-0"><div class="table-responsive">
+  <table class="table table-hover align-middle mb-0">
+    <thead><tr><th>Name</th><th>Username</th><th>Email</th><th>Role</th><th>Status</th><th>Last login</th><th class="text-end">Actions</th></tr></thead>
+    <tbody>
+    <% users.forEach(function (u) { var isSelf = String(u._id) === String(currentUser._id); %>
+      <tr class="<%= u.active ? '' : 'row-muted' %>">
+        <td class="fw-semibold"><%= u.name %><% if (isSelf) { %> <span class="text-muted small">(you)</span><% } %></td>
+        <td><%= u.username %></td><td><%= u.email %></td>
+        <td><span class="badge <%= u.role === 'admin' ? 'text-bg-dark' : 'text-bg-secondary' %>"><%= u.role === 'admin' ? 'Admin' : 'Staff' %></span></td>
+        <td><span class="badge <%= u.active ? 'text-bg-success' : 'text-bg-danger' %>"><%= u.active ? 'Active' : 'Deactivated' %></span></td>
+        <td class="small text-nowrap"><%= u.lastLoginAt ? fmt.dateTime(u.lastLoginAt) : 'Never' %></td>
+        <td class="text-end text-nowrap">
+          <a href="/users/<%= u._id %>/edit" class="btn btn-sm btn-outline-primary">Edit</a>
+          <% if (!isSelf) { %>
+            <form action="/users/<%= u._id %>/toggle" method="post" class="d-inline" data-confirm="<%= u.active ? 'Deactivate' : 'Activate' %> the account for <%= u.username %>?">
+              <%- include('../partials/csrf') %>
+              <button class="btn btn-sm btn-outline-secondary" type="submit"><%= u.active ? 'Deactivate' : 'Activate' %></button>
+            </form>
+          <% } %>
+          <% if (u.active) { %>
+            <form action="/users/<%= u._id %>/reset-link" method="post" class="d-inline" data-confirm="Create a one-time password reset link for <%= u.username %>?">
+              <%- include('../partials/csrf') %>
+              <button class="btn btn-sm btn-outline-secondary" type="submit">Reset password</button>
+            </form>
+          <% } %>
+        </td>
+      </tr>
+    <% }) %>
+    </tbody>
+  </table>
+</div></section>

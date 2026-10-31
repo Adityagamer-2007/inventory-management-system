@@ -1,0 +1,35 @@
+<%
+  function isActive(p) { return (p === '/' ? currentPath === '/' : currentPath.indexOf(p) === 0) ? 'active' : ''; }
+  var isAdmin = currentUser && currentUser.role === 'admin';
+%>
+<aside class="sidebar" id="sidebar">
+  <a class="sidebar-brand" href="/">
+    <img src="/images/logo.svg" alt="" width="30" height="30">
+    <span>Inventory<br>Management</span>
+  </a>
+  <nav class="sidebar-nav" aria-label="Main">
+    <a class="<%= isActive('/') %>" href="/">Dashboard</a>
+
+    <div class="nav-group">Catalogue</div>
+    <a class="<%= isActive('/products') %>" href="/products">Products</a>
+    <a class="<%= isActive('/categories') %>" href="/categories">Categories</a>
+    <a class="<%= isActive('/suppliers') %>" href="/suppliers">Suppliers</a>
+
+    <div class="nav-group">Stock</div>
+    <a class="<%= isActive('/stock/in') %>" href="/stock/in">Stock In</a>
+    <a class="<%= isActive('/stock/out') %>" href="/stock/out">Stock Out</a>
+    <a class="<%= isActive('/stock/transactions') %>" href="/stock/transactions">Transaction history</a>
+    <a class="<%= isActive('/low-stock') %>" href="/low-stock">Low stock
+      <% if (lowStockCount > 0) { %><span class="nav-count"><%= lowStockCount %></span><% } %>
+    </a>
+
+    <div class="nav-group">Insight</div>
+    <a class="<%= isActive('/reports') %>" href="/reports">Reports</a>
+
+    <% if (isAdmin) { %>
+      <div class="nav-group">Administration</div>
+      <a class="<%= isActive('/users') %>" href="/users">Users</a>
+      <a class="<%= isActive('/activity') %>" href="/activity">Activity log</a>
+    <% } %>
+  </nav>
+</aside>

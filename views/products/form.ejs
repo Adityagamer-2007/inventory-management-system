@@ -1,0 +1,63 @@
+<div class="page-head"><h1><%= isEdit ? 'Edit product' : 'Add product' %></h1></div>
+<%- include('../partials/errors') %>
+<% var action = isEdit ? '/products/' + product._id + '/edit' : '/products'; %>
+<form action="<%= action %>?_csrf=<%= csrfToken %>" method="post" enctype="multipart/form-data" class="panel form-panel" novalidate>
+  <%- include('../partials/csrf') %>
+  <div class="row g-3">
+    <div class="col-md-8"><label for="name" class="form-label">Product name</label>
+      <input class="form-control" id="name" name="name" maxlength="120" value="<%= product.name || '' %>" required></div>
+    <div class="col-md-4"><label for="sku" class="form-label">SKU</label>
+      <input class="form-control" id="sku" name="sku" maxlength="40" value="<%= product.sku || '' %>" required>
+      <div class="form-text">Unique code, e.g. STA-001</div></div>
+
+    <div class="col-md-6"><label for="category" class="form-label">Category</label>
+      <select class="form-select" id="category" name="category" required>
+        <option value="">Choose a category</option>
+        <% categories.forEach(function (c) { %><option value="<%= c._id %>" <%= String(product.category) === String(c._id) ? 'selected' : '' %>><%= c.name %></option><% }) %>
+      </select>
+      <% if (!categories.length) { %><div class="form-text text-danger">No categories yet. <a href="/categories/new">Add one first</a>.</div><% } %></div>
+    <div class="col-md-6"><label for="supplier" class="form-label">Supplier</label>
+      <select class="form-select" id="supplier" name="supplier" required>
+        <option value="">Choose a supplier</option>
+        <% suppliers.forEach(function (s) { %><option value="<%= s._id %>" <%= String(product.supplier) === String(s._id) ? 'selected' : '' %>><%= s.name %></option><% }) %>
+      </select>
+      <% if (!suppliers.length) { %><div class="form-text text-danger">No suppliers yet. <a href="/suppliers/new">Add one first</a>.</div><% } %></div>
+
+    <div class="col-md-3 col-6"><label for="purchasePrice" class="form-label">Purchase price</label>
+      <input class="form-control" id="purchasePrice" name="purchasePrice" inputmode="decimal" value="<%= product.purchasePrice !== undefined && !isNaN(product.purchasePrice) ? product.purchasePrice : '' %>" required></div>
+    <div class="col-md-3 col-6"><label for="sellingPrice" class="form-label">Selling price</label>
+      <input class="form-control" id="sellingPrice" name="sellingPrice" inputmode="decimal" value="<%= product.sellingPrice !== undefined && !isNaN(product.sellingPrice) ? product.sellingPrice : '' %>" required></div>
+    <div class="col-md-3 col-6">
+      <% if (isEdit) { %>
+        <label class="form-label">Current quantity</label>
+        <div class="form-control-plaintext fw-semibold"><%= product.quantity %></div>
+        <div class="form-text">Change it with <a href="/stock/in?product=<%= product._id %>">Stock In</a> or <a href="/stock/out?product=<%= product._id %>">Stock Out</a>.</div>
+      <% } else { %>
+        <label for="quantity" class="form-label">Opening quantity</label>
+        <input class="form-control" id="quantity" name="quantity" inputmode="numeric" value="<%= product.quantity !== undefined && !isNaN(product.quantity) ? product.quantity : 0 %>">
+      <% } %>
+    </div>
+    <div class="col-md-3 col-6"><label for="minStock" class="form-label">Minimum stock</label>
+      <input class="form-control" id="minStock" name="minStock" inputmode="numeric" value="<%= product.minStock !== undefined && !isNaN(product.minStock) ? product.minStock : 5 %>">
+      <div class="form-text">Alert at or below this</div></div>
+
+    <div class="col-12"><label for="description" class="form-label">Description</label>
+      <textarea class="form-control" id="description" name="description" rows="3" maxlength="1000"><%= product.description || '' %></textarea></div>
+
+    <div class="col-md-6">
+      <label for="image" class="form-label">Product image</label>
+      <input class="form-control" type="file" id="image" name="image" accept="image/jpeg,image/png,image/webp,image/gif">
+      <div class="form-text">JPG, PNG, WEBP or GIF, up to 2 MB.</div>
+      <% if (isEdit && product.image) { %>
+        <div class="mt-2 d-flex align-items-center gap-3">
+          <img class="thumb thumb-lg" src="/uploads/<%= product.image %>" alt="Current product image">
+          <div class="form-check"><input class="form-check-input" type="checkbox" id="removeImage" name="removeImage"><label class="form-check-label" for="removeImage">Remove current image</label></div>
+        </div>
+      <% } %>
+    </div>
+  </div>
+  <div class="form-actions">
+    <button type="submit" class="btn btn-primary"><%= isEdit ? 'Save changes' : 'Add product' %></button>
+    <a href="<%= isEdit ? '/products/' + product._id : '/products' %>" class="btn btn-outline-secondary">Cancel</a>
+  </div>
+</form>

@@ -1,0 +1,19 @@
+<h2 class="auth-title">Log in</h2>
+<%- include('../partials/errors') %>
+<form action="/login" method="post" novalidate>
+  <%- include('../partials/csrf') %>
+  <div class="mb-3">
+    <label for="username" class="form-label">Username or email</label>
+    <input type="text" class="form-control" id="username" name="username" value="<%= form.username || '' %>" autocomplete="username" required autofocus>
+  </div>
+  <div class="mb-3">
+    <label for="password" class="form-label">Password</label>
+    <input type="password" class="form-control" id="password" name="password" autocomplete="current-password" required>
+  </div>
+  <button type="submit" class="btn btn-primary w-100">Log in</button>
+</form>
+<% if (allowRegistration) { %>
+  <p class="text-center small mt-3 mb-0">No account yet? <a href="/register">Register as staff</a></p>
+<% } else { %>
+  <p class="text-center small text-muted mt-3 mb-0">Accounts are created by an administrator.</p>
+<% } %>

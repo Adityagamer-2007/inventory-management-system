@@ -1,0 +1,36 @@
+<div class="page-head">
+  <h1>Transaction history</h1>
+  <a href="/reports?type=transactions&from=<%= from %>&to=<%= to %>&format=csv" class="btn btn-outline-secondary">Export CSV</a>
+</div>
+<% if (dateError) { %><div class="alert alert-warning"><%= dateError %></div><% } %>
+<form method="get" action="/stock/transactions" class="filter-bar">
+  <input type="search" name="q" class="form-control" placeholder="Search product or SKU" value="<%= q %>" aria-label="Search">
+  <select name="type" class="form-select" aria-label="Type">
+    <option value="">All types</option>
+    <option value="in" <%= type === 'in' ? 'selected' : '' %>>Stock In</option>
+    <option value="out" <%= type === 'out' ? 'selected' : '' %>>Stock Out</option>
+  </select>
+  <input type="date" name="from" class="form-control" value="<%= from %>" aria-label="From date">
+  <input type="date" name="to" class="form-control" value="<%= to %>" aria-label="To date">
+  <button class="btn btn-outline-primary" type="submit">Filter</button>
+  <% if (q || type || from || to) { %><a href="/stock/transactions" class="btn btn-link">Clear</a><% } %>
+</form>
+<section class="panel p-0"><div class="table-responsive">
+  <table class="table table-hover align-middle mb-0">
+    <thead><tr><th>When</th><th>Product</th><th>Type</th><th class="text-end">Qty</th><th class="text-end">Before</th><th class="text-end">After</th><th>By</th><th>Note</th></tr></thead>
+    <tbody>
+    <% if (transactions.length === 0) { %><tr><td colspan="8" class="empty">No transactions found.</td></tr><% } %>
+    <% transactions.forEach(function (t) { %>
+      <tr>
+        <td class="small text-nowrap"><%= fmt.dateTime(t.createdAt) %></td>
+        <td><a href="/products/<%= t.product %>"><%= t.productName %></a><div class="small text-muted"><%= t.sku %></div></td>
+        <td><span class="badge <%= t.type === 'in' ? 'text-bg-success' : 'text-bg-secondary' %>"><%= t.type === 'in' ? 'Stock In' : 'Stock Out' %></span></td>
+        <td class="text-end fw-semibold"><%= t.quantity %></td>
+        <td class="text-end"><%= t.previousStock %></td><td class="text-end"><%= t.newStock %></td>
+        <td><%= t.username %></td><td><%= t.note %></td>
+      </tr>
+    <% }) %>
+    </tbody>
+  </table>
+</div></section>
+<%- include('../partials/pagination') %>

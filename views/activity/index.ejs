@@ -1,0 +1,18 @@
+<div class="page-head"><h1>Activity log</h1></div>
+<form method="get" action="/activity" class="filter-bar">
+  <input type="search" name="q" class="form-control" placeholder="Search user, action or message" value="<%= q %>" aria-label="Search activity">
+  <button class="btn btn-outline-primary" type="submit">Search</button>
+  <% if (q) { %><a href="/activity" class="btn btn-link">Clear</a><% } %>
+</form>
+<section class="panel p-0"><div class="table-responsive">
+  <table class="table table-hover align-middle mb-0">
+    <thead><tr><th>When</th><th>User</th><th>Action</th><th>Details</th></tr></thead>
+    <tbody>
+    <% if (logs.length === 0) { %><tr><td colspan="4" class="empty">No activity found.</td></tr><% } %>
+    <% logs.forEach(function (l) { %>
+      <tr><td class="small text-nowrap"><%= fmt.dateTime(l.createdAt) %></td><td><%= l.username %></td><td><code><%= l.action %></code></td><td><%= l.message %></td></tr>
+    <% }) %>
+    </tbody>
+  </table>
+</div></section>
+<%- include('../partials/pagination') %>

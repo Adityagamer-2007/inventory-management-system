@@ -1,0 +1,43 @@
+<div class="page-head">
+  <h1>Reports</h1>
+  <a class="btn btn-outline-secondary" href="/reports?type=<%= typeKey %>&from=<%= from %>&to=<%= to %>&format=csv">Download CSV</a>
+</div>
+<form method="get" action="/reports" class="filter-bar">
+  <select name="type" class="form-select" aria-label="Report type">
+    <% types.forEach(function (t) { %><option value="<%= t.key %>" <%= t.key === typeKey ? 'selected' : '' %>><%= t.label %></option><% }) %>
+  </select>
+  <% if (typeInfo.usesDates) { %>
+    <input type="date" name="from" class="form-control" value="<%= from %>" aria-label="From date">
+    <input type="date" name="to" class="form-control" value="<%= to %>" aria-label="To date">
+  <% } %>
+  <button class="btn btn-primary" type="submit">Show report</button>
+</form>
+<% if (dateError) { %><div class="alert alert-warning"><%= dateError %></div><% } %>
+
+<section class="panel">
+  <h2 class="panel-title"><%= report.title %><% if (typeInfo.usesDates && (from || to)) { %> <span class="text-muted fw-normal">(<%= from || 'start' %> to <%= to || 'today' %>)</span><% } %></h2>
+  <div class="summary-row">
+    <% report.summary.forEach(function (s) { %>
+      <div class="summary-item"><div class="summary-value"><%= s.type === 'money' ? fmt.money(s.value) : s.value.toLocaleString('en-IN') %></div><div class="summary-label"><%= s.label %></div></div>
+    <% }) %>
+  </div>
+  <div class="table-responsive">
+    <table class="table table-sm table-hover align-middle mb-0">
+      <thead><tr>
+        <% report.columns.forEach(function (c) { %><th class="<%= (c.type === 'number' || c.type === 'money') ? 'text-end' : '' %>"><%= c.label %></th><% }) %>
+      </tr></thead>
+      <tbody>
+      <% if (report.rows.length === 0) { %><tr><td colspan="<%= report.columns.length %>" class="empty">No data for this report.</td></tr><% } %>
+      <% report.rows.forEach(function (r) { %>
+        <tr>
+          <% report.columns.forEach(function (c) { var v = r[c.key]; %>
+            <td class="<%= (c.type === 'number' || c.type === 'money') ? 'text-end' : '' %> <%= c.type === 'date' ? 'text-nowrap small' : '' %>">
+              <%= c.type === 'money' ? fmt.money(v) : (c.type === 'date' ? fmt.dateTime(v) : (v === undefined || v === null ? '' : v)) %>
+            </td>
+          <% }) %>
+        </tr>
+      <% }) %>
+      </tbody>
+    </table>
+  </div>
+</section>

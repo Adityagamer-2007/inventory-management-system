@@ -1,0 +1,16 @@
+<header class="topbar">
+  <button class="btn btn-outline-secondary btn-sm d-lg-none" type="button" id="sidebarToggle" aria-label="Open menu">Menu</button>
+  <div class="topbar-title"><%= title %></div>
+  <div class="topbar-user">
+    <% if (currentUser) { %>
+      <a href="/account" class="user-link">
+        <span class="user-name"><%= currentUser.name %></span>
+        <span class="badge <%= currentUser.role === 'admin' ? 'text-bg-dark' : 'text-bg-secondary' %>"><%= currentUser.role === 'admin' ? 'Admin' : 'Staff' %></span>
+      </a>
+      <form action="/logout" method="post" class="d-inline">
+        <%- include('csrf') %>
+        <button class="btn btn-outline-secondary btn-sm" type="submit">Log out</button>
+      </form>
+    <% } %>
+  </div>
+</header>

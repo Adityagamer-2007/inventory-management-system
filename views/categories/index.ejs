@@ -1,0 +1,33 @@
+<div class="page-head">
+  <h1>Categories</h1>
+  <a href="/categories/new" class="btn btn-primary">Add category</a>
+</div>
+<form method="get" action="/categories" class="filter-bar">
+  <input type="search" name="q" class="form-control" placeholder="Search categories" value="<%= q %>" aria-label="Search categories">
+  <button class="btn btn-outline-primary" type="submit">Search</button>
+  <% if (q) { %><a href="/categories" class="btn btn-link">Clear</a><% } %>
+</form>
+<section class="panel p-0"><div class="table-responsive">
+  <table class="table table-hover align-middle mb-0">
+    <thead><tr><th>Name</th><th>Description</th><th class="text-end">Products</th><th class="text-end">Actions</th></tr></thead>
+    <tbody>
+    <% if (categories.length === 0) { %><tr><td colspan="4" class="empty">No categories found.</td></tr><% } %>
+    <% categories.forEach(function (c) { var n = countMap[c._id] || 0; %>
+      <tr>
+        <td class="fw-semibold"><a href="/products?category=<%= c._id %>"><%= c.name %></a></td>
+        <td><%= c.description %></td>
+        <td class="text-end"><%= n %></td>
+        <td class="text-end text-nowrap">
+          <% if (currentUser.role === 'admin') { %>
+            <a href="/categories/<%= c._id %>/edit" class="btn btn-sm btn-outline-primary">Edit</a>
+            <form action="/categories/<%= c._id %>/delete" method="post" class="d-inline" data-confirm="Delete category '<%= c.name %>'?">
+              <%- include('../partials/csrf') %>
+              <button class="btn btn-sm btn-outline-danger" type="submit" <%= n > 0 ? 'disabled title="Still used by products"' : '' %>>Delete</button>
+            </form>
+          <% } else { %><span class="text-muted small">Admin only</span><% } %>
+        </td>
+      </tr>
+    <% }) %>
+    </tbody>
+  </table>
+</div></section>

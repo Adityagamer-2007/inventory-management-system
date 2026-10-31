@@ -1,0 +1,6 @@
+<% (flash || []).forEach(function (m) { %>
+  <div class="alert alert-<%= m.type %> alert-dismissible fade show" role="alert">
+    <%= m.message %>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+<% }) %>

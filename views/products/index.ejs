@@ -1,0 +1,53 @@
+<div class="page-head">
+  <h1>Products</h1>
+  <a href="/products/new" class="btn btn-primary">Add product</a>
+</div>
+
+<form method="get" action="/products" class="filter-bar">
+  <input type="search" name="q" class="form-control" placeholder="Search name or SKU" value="<%= q %>" aria-label="Search products">
+  <select name="category" class="form-select" aria-label="Filter by category">
+    <option value="">All categories</option>
+    <% categories.forEach(function (c) { %><option value="<%= c._id %>" <%= String(c._id) === category ? 'selected' : '' %>><%= c.name %></option><% }) %>
+  </select>
+  <select name="supplier" class="form-select" aria-label="Filter by supplier">
+    <option value="">All suppliers</option>
+    <% suppliers.forEach(function (s) { %><option value="<%= s._id %>" <%= String(s._id) === supplier ? 'selected' : '' %>><%= s.name %></option><% }) %>
+  </select>
+  <button class="btn btn-outline-primary" type="submit">Filter</button>
+  <% if (q || category || supplier) { %><a href="/products" class="btn btn-link">Clear</a><% } %>
+</form>
+
+<section class="panel p-0">
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead><tr><th></th><th>Product</th><th>Category</th><th>Supplier</th><th class="text-end">Price</th><th class="text-end">Stock</th><th>Status</th><th class="text-end">Actions</th></tr></thead>
+      <tbody>
+      <% if (products.length === 0) { %>
+        <tr><td colspan="8" class="empty">No products match. <a href="/products/new">Add a product</a>.</td></tr>
+      <% } %>
+      <% products.forEach(function (p) { %>
+        <tr class="<%= p.quantity <= 0 ? 'row-out' : (p.quantity <= p.minStock ? 'row-low' : '') %>">
+          <td style="width:56px"><img class="thumb" src="<%= p.image ? '/uploads/' + p.image : '/images/placeholder.svg' %>" alt=""></td>
+          <td><a href="/products/<%= p._id %>" class="fw-semibold"><%= p.name %></a><div class="small text-muted"><%= p.sku %></div></td>
+          <td><%= p.category ? p.category.name : '-' %></td>
+          <td><%= p.supplier ? p.supplier.name : '-' %></td>
+          <td class="text-end"><%= fmt.money(p.sellingPrice) %></td>
+          <td class="text-end fw-semibold"><%= p.quantity %></td>
+          <td><%- include('../partials/status-badge', { quantity: p.quantity, minStock: p.minStock }) %></td>
+          <td class="text-end text-nowrap">
+            <a href="/products/<%= p._id %>" class="btn btn-sm btn-outline-secondary">View</a>
+            <a href="/products/<%= p._id %>/edit" class="btn btn-sm btn-outline-primary">Edit</a>
+            <% if (currentUser.role === 'admin') { %>
+              <form action="/products/<%= p._id %>/delete" method="post" class="d-inline" data-confirm="Delete product '<%= p.name %>'? This cannot be undone.">
+                <%- include('../partials/csrf') %>
+                <button class="btn btn-sm btn-outline-danger" type="submit">Delete</button>
+              </form>
+            <% } %>
+          </td>
+        </tr>
+      <% }) %>
+      </tbody>
+    </table>
+  </div>
+</section>
+<%- include('../partials/pagination') %>

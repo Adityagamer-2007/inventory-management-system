@@ -1,0 +1,13 @@
+<div class="page-head"><h1><%= isEdit ? 'Edit category' : 'Add category' %></h1></div>
+<%- include('../partials/errors') %>
+<form action="<%= isEdit ? '/categories/' + category._id + '/edit' : '/categories' %>" method="post" class="panel form-panel narrow" novalidate>
+  <%- include('../partials/csrf') %>
+  <div class="mb-3"><label for="name" class="form-label">Name</label>
+    <input class="form-control" id="name" name="name" maxlength="60" value="<%= category.name || '' %>" required autofocus></div>
+  <div class="mb-3"><label for="description" class="form-label">Description</label>
+    <textarea class="form-control" id="description" name="description" rows="3" maxlength="300"><%= category.description || '' %></textarea></div>
+  <div class="form-actions">
+    <button class="btn btn-primary" type="submit"><%= isEdit ? 'Save changes' : 'Add category' %></button>
+    <a href="/categories" class="btn btn-outline-secondary">Cancel</a>
+  </div>
+</form>

@@ -1,0 +1,28 @@
+<div class="page-head">
+  <h1>Low-stock alerts</h1>
+  <a href="/reports?type=low-stock&format=csv" class="btn btn-outline-secondary">Export CSV</a>
+</div>
+<p class="text-muted">Products at or below their minimum stock level. Lowest stock is shown first.</p>
+<section class="panel p-0">
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead><tr><th>Product</th><th>Category</th><th>Supplier</th><th class="text-end">In stock</th><th class="text-end">Minimum</th><th>Status</th><th class="text-end">Action</th></tr></thead>
+      <tbody>
+      <% if (products.length === 0) { %>
+        <tr><td colspan="7" class="empty">All products are above their minimum level.</td></tr>
+      <% } %>
+      <% products.forEach(function (p) { %>
+        <tr class="<%= p.quantity <= 0 ? 'row-out' : 'row-low' %>">
+          <td><a href="/products/<%= p._id %>" class="fw-semibold"><%= p.name %></a><div class="small text-muted"><%= p.sku %></div></td>
+          <td><%= p.category ? p.category.name : '-' %></td>
+          <td><%= p.supplier ? p.supplier.name : '-' %><% if (p.supplier && p.supplier.phone) { %><div class="small text-muted"><%= p.supplier.phone %></div><% } %></td>
+          <td class="text-end fw-semibold"><%= p.quantity %></td>
+          <td class="text-end"><%= p.minStock %></td>
+          <td><%- include('../partials/status-badge', { quantity: p.quantity, minStock: p.minStock }) %></td>
+          <td class="text-end"><a href="/stock/in?product=<%= p._id %>" class="btn btn-sm btn-success">Stock In</a></td>
+        </tr>
+      <% }) %>
+      </tbody>
+    </table>
+  </div>
+</section>

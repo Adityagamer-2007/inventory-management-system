@@ -1,0 +1,22 @@
+<% var isIn = type === 'in'; %>
+<div class="page-head"><h1><%= isIn ? 'Stock In' : 'Stock Out' %></h1></div>
+<p class="text-muted"><%= isIn ? 'Record goods received. The product quantity goes up.' : 'Record goods sold, used or removed. The product quantity goes down.' %></p>
+<%- include('../partials/errors') %>
+<form action="/stock/<%= type %>" method="post" class="panel form-panel narrow" novalidate>
+  <%- include('../partials/csrf') %>
+  <div class="mb-3"><label for="product" class="form-label">Product</label>
+    <select class="form-select" id="product" name="product" required>
+      <option value="">Choose a product</option>
+      <% products.forEach(function (p) { %>
+        <option value="<%= p._id %>" <%= String(form.product) === String(p._id) ? 'selected' : '' %>><%= p.name %> (<%= p.sku %>) - in stock: <%= p.quantity %></option>
+      <% }) %>
+    </select></div>
+  <div class="mb-3"><label for="quantity" class="form-label">Quantity</label>
+    <input class="form-control" id="quantity" name="quantity" inputmode="numeric" value="<%= form.quantity && !isNaN(form.quantity) ? form.quantity : '' %>" required></div>
+  <div class="mb-3"><label for="note" class="form-label">Reason or notes <span class="text-muted">(optional)</span></label>
+    <input class="form-control" id="note" name="note" maxlength="300" value="<%= form.note || '' %>" placeholder="<%= isIn ? 'e.g. Purchase order 1042' : 'e.g. Sold to customer, damaged' %>"></div>
+  <div class="form-actions">
+    <button class="btn <%= isIn ? 'btn-success' : 'btn-primary' %>" type="submit">Record <%= isIn ? 'Stock In' : 'Stock Out' %></button>
+    <a href="/stock/transactions" class="btn btn-outline-secondary">Cancel</a>
+  </div>
+</form>

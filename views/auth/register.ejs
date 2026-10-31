@@ -1,0 +1,18 @@
+<h2 class="auth-title">Create a staff account</h2>
+<%- include('../partials/errors') %>
+<form action="/register" method="post" novalidate>
+  <%- include('../partials/csrf') %>
+  <div class="mb-3"><label for="name" class="form-label">Full name</label>
+    <input type="text" class="form-control" id="name" name="name" value="<%= form.name || '' %>" required></div>
+  <div class="mb-3"><label for="username" class="form-label">Username</label>
+    <input type="text" class="form-control" id="username" name="username" value="<%= form.username || '' %>" autocomplete="username" required></div>
+  <div class="mb-3"><label for="email" class="form-label">Email</label>
+    <input type="email" class="form-control" id="email" name="email" value="<%= form.email || '' %>" autocomplete="email" required></div>
+  <div class="mb-3"><label for="password" class="form-label">Password</label>
+    <input type="password" class="form-control" id="password" name="password" autocomplete="new-password" required>
+    <div class="form-text">At least 8 characters, with a letter and a number.</div></div>
+  <div class="mb-3"><label for="confirmPassword" class="form-label">Repeat password</label>
+    <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" autocomplete="new-password" required></div>
+  <button type="submit" class="btn btn-primary w-100">Register</button>
+</form>
+<p class="text-center small mt-3 mb-0"><a href="/login">Back to log in</a></p>

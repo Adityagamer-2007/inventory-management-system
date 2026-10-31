@@ -1,0 +1,7 @@
+<div class="error-page">
+  <div class="error-code">!</div>
+  <h2><%= typeof heading !== 'undefined' ? heading : 'Something went wrong' %></h2>
+  <p class="text-muted"><%= typeof message !== 'undefined' ? message : 'An unexpected error occurred.' %></p>
+  <% if (typeof detail !== 'undefined' && detail) { %><pre class="error-detail"><%= detail %></pre><% } %>
+  <a href="/" class="btn btn-primary">Back to dashboard</a>
+</div>
